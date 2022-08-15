@@ -29,6 +29,13 @@ async function run() {
       res.send(user);
     });
 
+    app.get("/user/:id", async (req, res) => {
+      const updateId = req.params.id;
+      console.log("id", updateId);
+      const cursor = await testColl.findOne({ _id: objectId(updateId) });
+      res.send(cursor);
+      console.log(cursor);
+    });
     app.post("/user", async (req, res) => {
       const newUser = req.body;
       console.log(newUser);
@@ -39,10 +46,10 @@ async function run() {
 
     app.delete("/user/:id", async (req, res) => {
       const userId = req.params.id;
-      console.log(userId, "userId");
+
       const query = { _id: objectId(userId) };
       const result = await testColl.deleteOne(query);
-      res.send(result)
+      res.send(result);
     });
   } finally {
     // Ensures that the client will close when you finish/error
