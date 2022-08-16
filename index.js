@@ -31,14 +31,14 @@ async function run() {
 
     app.get("/user/:id", async (req, res) => {
       const updateId = req.params.id;
-      console.log("id", updateId);
+  
       const cursor = await testColl.findOne({ _id: objectId(updateId) });
-      res.send(cursor);
+        res.send(cursor)
       console.log(cursor);
     });
     app.post("/user", async (req, res) => {
       const newUser = req.body;
-      console.log(newUser);
+   
       const result = await testColl.insertOne(newUser);
 
       res.send(result);
@@ -51,6 +51,23 @@ async function run() {
       const result = await testColl.deleteOne(query);
       res.send(result);
     });
+
+    app.put("/user/:id",async(req,res)=>{
+        
+      const userId=req.params.id 
+      const updateUser=req.body 
+  
+      const filter={_id:objectId(userId)}
+
+      const updateDoc = {
+        $set: {
+          name:updateUser?.name,
+          email:updateUser?.email,
+        },
+      };
+      const result = await testColl.updateOne(filter, updateDoc);
+      res.send(result)
+    })
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
