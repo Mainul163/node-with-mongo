@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const objectId = require("mongodb").ObjectId;
 
@@ -8,8 +9,7 @@ app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 5000;
 
-const uri =
-  "mongodb+srv://dbuser1:0Hm0KAegoxVUxbkl@cluster0.kgvtq2j.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kgvtq2j.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -31,14 +31,14 @@ async function run() {
 
     app.get("/user/:id", async (req, res) => {
       const updateId = req.params.id;
-  
+
       const cursor = await testColl.findOne({ _id: objectId(updateId) });
-        res.send(cursor)
+      res.send(cursor);
       console.log(cursor);
     });
     app.post("/user", async (req, res) => {
       const newUser = req.body;
-   
+
       const result = await testColl.insertOne(newUser);
 
       res.send(result);
@@ -52,22 +52,21 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/user/:id",async(req,res)=>{
-        
-      const userId=req.params.id 
-      const updateUser=req.body 
-  
-      const filter={_id:objectId(userId)}
+    app.put("/user/:id", async (req, res) => {
+      const userId = req.params.id;
+      const updateUser = req.body;
+
+      const filter = { _id: objectId(userId) };
 
       const updateDoc = {
         $set: {
-          name:updateUser?.name,
-          email:updateUser?.email,
+          name: updateUser?.name,
+          email: updateUser?.email,
         },
       };
       const result = await testColl.updateOne(filter, updateDoc);
-      res.send(result)
-    })
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
