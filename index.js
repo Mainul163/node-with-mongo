@@ -21,8 +21,6 @@ async function run() {
     // database and collection code goes here
     const testColl = client.db("testExpress").collection("testuser");
 
-    // insert code goes here
-
     app.get("/user", async (req, res) => {
       const cursor = testColl.find();
       const user = await cursor.toArray();
@@ -36,6 +34,14 @@ async function run() {
       res.send(cursor);
       console.log(cursor);
     });
+
+    //data base total koyta data ase ta jana jabe
+    app.get("/total", async (req, res) => {
+      const count = await testColl.estimatedDocumentCount();
+
+      res.send({ count });
+    });
+
     app.post("/user", async (req, res) => {
       const newUser = req.body;
 
@@ -81,5 +87,34 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
+// ****************************
 // cursor.limit(10).toArray() = matro 10 ta item dekhabe
+
+// ***************************
+
+// **********  pagination code  ******************
+
+app.get("product", async (req, res) => {
+  const page = parseInt(req.query.page);
+  const size = parseInt(req.query.size);
+
+  const cursor = colltection.find();
+  let products;
+
+  if (page || size) {
+    products = await cursor
+      .skip(page * size)
+      .limit(size)
+      .toArray();
+  } else {
+    products = await cursor.toArray();
+  }
+  res.send(products);
+});
+
+//this meaning of skip()
+// 0--> skip : 0 get : 0-10(10)
+// 1--> skip : 1*10 get : 11-20(10)
+// 3--> skip : 3*10 get : 21-30(10)
+
+// **********  pagination code  ******************
