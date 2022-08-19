@@ -82,5 +82,4 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-// pass ;0Hm0KAegoxVUxbkl
-//user:dbuser1
+// cursor.limit(101).toArray() = matro 10 ta item dekhabe
